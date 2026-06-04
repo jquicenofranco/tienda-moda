@@ -1,0 +1,28 @@
+# Dependencias (solo la carpeta vendor en la raíz; no librerías embebidas)
+/vendor/
+/node_modules/
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Logs y temporales
+*.log
+*.cache
+
+# Subidas de usuarios
+/uploads/*
+!/uploads/.gitkeep
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# IDE / Editor
+.vscode/
+.idea/
+*.sublime-*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
