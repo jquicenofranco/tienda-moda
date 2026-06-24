@@ -283,8 +283,8 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 -- Volcando datos para la tabla sistema_moda.usuarios: ~1 rows (aproximadamente)
 DELETE FROM `usuarios`;
 INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `rol`, `activo`) VALUES
-	(3, 'Admin Principal', 'admin@tienda.com', '$2y$10$uw8PETVysGcwnKzoEH3HxualJv46S8/.evhQkepuHOdfhmIntrShe', 'admin', 1),
-	(5, 'MARIO', 'mario@tienda.com', '$2y$10$rEYS6RePPbqvtvV5i9UcmOQ6LJaecD0QS3bmbmSPLZjR5.Y3HHrMS', 'vendedor', 1);
+	(3, 'Admin Principal', 'admin@tienda.com', '$2y$10$ZvVleCkjH9no45GDr5m00OTcjwrUUbS7C8Ik8kP8.4aRVAhMtaFj6', 'admin', 1),
+	(5, 'MARIO', 'mario@tienda.com', '$2y$10$.isOUlrU.ctvedxMTPph/OYEn3nKv0hY/osuFgS6F6IV1wbDbXsUe', 'vendedor', 1);
 
 -- Volcando estructura para tabla sistema_moda.ventas
 CREATE TABLE IF NOT EXISTS `ventas` (

@@ -41,13 +41,13 @@ Las siguientes veces es prácticamente instantáneo.
 
 | Servicio     | URL                                                  | Credenciales                |
 |--------------|------------------------------------------------------|-----------------------------|
-| **App web**  | http://localhost:8080                                | `admin@tienda.com` / *(ver «Primer acceso»)* |
+| **App web**  | http://localhost:8080                                | `admin@tienda.com` / `admin123` |
 | **MySQL**    | `localhost:3307` (solo clientes externos)            | `tienda` / `tienda_pass`    |
 
 > Si el puerto `8080` está ocupado, edita `APP_PORT` en `.env` y vuelve a levantar.
 
-> ⚠️ **Antes de entrar por primera vez debes establecer la contraseña del administrador.**
-> Consulta la sección [🔑 Primer acceso (usuario inicial)](#-primer-acceso-usuario-inicial).
+> ⚠️ `admin123` es una contraseña de **desarrollo**. Cámbiala desde el módulo **Perfil**
+> antes de cualquier uso real. Más detalles en [🔑 Primer acceso (usuario inicial)](#-primer-acceso-usuario-inicial).
 
 ### 4. ¿Qué hace automáticamente?
 
@@ -154,36 +154,35 @@ Si prefieres ejecutar el proyecto sin Docker:
 
 ## 🔑 Primer acceso (usuario inicial)
 
-Al levantar el proyecto desde cero, `bk_basededatos.sql` siembra automáticamente dos usuarios:
+Al levantar el proyecto desde cero, `bk_basededatos.sql` siembra automáticamente dos usuarios
+**con contraseña ya definida** (`admin123`):
 
-| Usuario            | Rol        | Para qué sirve                                                        |
-|--------------------|------------|----------------------------------------------------------------------|
-| `admin@tienda.com` | **admin**  | **Empieza con este.** Acceso total: configuración, usuarios, productos, reportes, caja. |
-| `mario@tienda.com` | vendedor   | Acceso limitado a operaciones de venta.                              |
+| Usuario            | Contraseña | Rol        | Para qué sirve                                                        |
+|--------------------|------------|------------|----------------------------------------------------------------------|
+| `admin@tienda.com` | `admin123` | **admin**  | **Empieza con este.** Acceso total: configuración, usuarios, productos, reportes, caja. |
+| `mario@tienda.com` | `admin123` | vendedor   | Acceso limitado a operaciones de venta.                              |
 
-Para configurar el sistema debes iniciar sesión con **`admin@tienda.com`** (rol admin).
+Para configurar el sistema, inicia sesión en http://localhost:8080 con **`admin@tienda.com`**
+/ `admin123`. No se requiere ningún paso manual: la contraseña ya viene en los datos sembrados.
 
-> 🔒 **La contraseña del admin no se distribuye en texto plano** (en la base sembrada solo
-> existe el *hash*). Por seguridad, la ruta de auto-creación de admin (`/auth/setup`) fue
-> **eliminada**, así que debes establecer la contraseña tú mismo, **una sola vez**, tras el
-> primer arranque:
+> 🔒 En la base de datos solo se almacena el *hash* (bcrypt), nunca la contraseña en texto
+> plano. La ruta de auto-creación de admin (`/auth/setup`) fue **eliminada** por seguridad.
+
+> ⚠️ `admin123` es una contraseña pensada para **desarrollo local**. Cámbiala cuanto antes
+> desde el módulo **Perfil**, y gestiona los demás usuarios desde el módulo **Usuarios**.
+
+### Cambiar la contraseña sembrada (opcional)
+
+Si quieres que el proyecto arranque con **otra** contraseña por defecto, regenera el *hash*
+y reemplázalo en `bk_basededatos.sql` (líneas de `INSERT INTO usuarios`):
 
 ```bash
-docker exec tienda-moda-app php -r '
-$pdo = new PDO("mysql:host=db;dbname=sistema_moda;charset=utf8mb4", getenv("DB_USER") ?: "tienda", getenv("DB_PASS") ?: "tienda_pass");
-$hash = password_hash("CambiaEstaClave#2026", PASSWORD_DEFAULT);
-$stmt = $pdo->prepare("UPDATE usuarios SET password = :p WHERE email = :e");
-$stmt->execute([":p" => $hash, ":e" => "admin@tienda.com"]);
-echo "Contraseña del admin actualizada: " . $stmt->rowCount() . " fila(s)\n";
-'
+# Genera el hash de tu nueva contraseña
+docker exec tienda-moda-app php -r 'echo password_hash("TuNuevaClave", PASSWORD_DEFAULT)."\n";'
 ```
 
-Reemplaza `CambiaEstaClave#2026` por la contraseña que desees. Luego entra en
-http://localhost:8080 con `admin@tienda.com` y esa contraseña. Repite el comando con
-`mario@tienda.com` si quieres habilitar también al vendedor.
-
-> 💡 Una vez dentro, puedes gestionar usuarios y cambiar contraseñas desde el módulo
-> **Usuarios** y **Perfil**, sin volver a usar la línea de comandos.
+Pega el valor resultante en el campo `password` del usuario correspondiente dentro de
+`bk_basededatos.sql` y vuelve a levantar con un volumen limpio (`docker compose down -v && docker compose up -d`).
 
 ---
 
@@ -192,7 +191,7 @@ http://localhost:8080 con `admin@tienda.com` y esa contraseña. Repite el comand
 Este proyecto incluye las siguientes protecciones; tenlas en cuenta al desplegar:
 
 - **Sin ruta de setup pública.** Se eliminó `/auth/setup` (que creaba un admin con
-  contraseña fija). El usuario inicial se configura con el comando de arriba.
+  contraseña fija accesible por cualquiera).
 - **Protección CSRF** en todas las peticiones `POST` (formularios y `fetch` JSON). El token
   se valida de forma centralizada en `public/index.php`; las vistas lo inyectan con
   `Csrf::field()` / `Csrf::meta()` (helper en `app/core/Csrf.php`).
