@@ -50,6 +50,7 @@
             <div class="card-header bg-white fw-bold">Registrar Entrada (Devolución) o Salida (Merma)</div>
             <div class="card-body">
                 <form action="<?= BASE_URL ?>/movimiento/guardar" method="POST" id="formAjuste">
+                    <?= Csrf::field() ?>
                     <input type="hidden" name="id_variante" id="id_variante_submit" required>
 
                     <div class="row">

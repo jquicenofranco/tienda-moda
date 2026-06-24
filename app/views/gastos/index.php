@@ -101,6 +101,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="<?= BASE_URL ?>/gasto/guardar" method="POST">
+                <?= Csrf::field() ?>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="monto" class="form-label fw-bold">Monto a Retirar (S/)</label>

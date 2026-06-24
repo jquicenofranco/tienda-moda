@@ -97,6 +97,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="formProveedor" action="<?= BASE_URL ?>/proveedor/guardar" method="POST">
+                <?= Csrf::field() ?>
                 <div class="modal-body">
                     <input type="hidden" id="proveedorId" name="id">
                     

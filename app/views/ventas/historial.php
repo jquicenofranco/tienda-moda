@@ -102,7 +102,8 @@
                 <h5 class="modal-title"><i class="bi bi-exclamation-octagon-fill"></i> Confirmar Anulación</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formAnular" method="GET">
+            <form id="formAnular" method="POST">
+                <?= Csrf::field() ?>
                 <div class="modal-body">
                     <p>Esta acción es irreversible y requiere un motivo. El stock será repuesto.</p>
                     <div class="mb-3">

@@ -118,6 +118,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="formUsuario" action="<?= BASE_URL ?>/usuario/guardar" method="POST">
+                <?= Csrf::field() ?>
                 <div class="modal-body">
                     <input type="hidden" id="usuarioId" name="id">
                     

@@ -103,6 +103,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="formCliente" action="<?= BASE_URL ?>/cliente/guardar" method="POST">
+                <?= Csrf::field() ?>
                 <div class="modal-body">
                     <input type="hidden" id="clienteId" name="id">
                     

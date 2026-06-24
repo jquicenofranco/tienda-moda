@@ -64,6 +64,7 @@
                 </div>
 
                 <form action="<?= BASE_URL ?>/caja/cerrar" method="POST">
+                    <?= Csrf::field() ?>
                     <input type="hidden" name="id_sesion" value="<?= $caja['id'] ?>">
                     <input type="hidden" name="total_ventas" value="<?= $ventas_sesion ?>">
                     <input type="hidden" name="total_gastos" value="<?= $gastos_sesion ?>">

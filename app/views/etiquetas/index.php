@@ -40,7 +40,7 @@
         <p class="text-muted">Selecciona los productos y la cantidad de etiquetas que deseas imprimir.</p>
 
         <form action="<?= BASE_URL ?>/etiqueta/generar" method="POST" target="_blank">
-            
+            <?= Csrf::field() ?>
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="m-0 text-primary fw-bold">Selección de Productos</h5>

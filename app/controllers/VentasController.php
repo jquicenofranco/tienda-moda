@@ -100,7 +100,7 @@ class VentasController {
             header('Location: ' . BASE_URL . '/ventas/historial?error=permission');
             return;
         }
-        $motivo = isset($_GET['motivo']) ? urldecode($_GET['motivo']) : 'Sin motivo';
+        $motivo = isset($_POST['motivo']) ? trim($_POST['motivo']) : 'Sin motivo';
         $id_admin = $_SESSION['user_id'];
         require_once '../app/models/Venta.php';
         $ventaModel = new Venta();

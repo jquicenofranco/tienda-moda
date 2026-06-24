@@ -62,6 +62,7 @@
                     <div class="card-header bg-white fw-bold py-3">Información Personal y Credenciales</div>
                     <div class="card-body p-4">
                         <form action="<?= BASE_URL ?>/perfil/guardar" method="POST">
+                            <?= Csrf::field() ?>
                             <input type="hidden" name="id" value="<?= $usuario['id'] ?>">
 
                             <div class="mb-3">

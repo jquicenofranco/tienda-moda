@@ -49,7 +49,7 @@
             <div class="card-body p-4">
                 
                 <form action="<?= BASE_URL ?>/config/guardar" method="POST">
-                    
+                    <?= Csrf::field() ?>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Nombre de la Tienda</label>

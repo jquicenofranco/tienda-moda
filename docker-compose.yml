@@ -1,0 +1,108 @@
+# =============================================================
+#  Tienda Moda — Orquestación con Docker Compose
+# =============================================================
+#  Servicios:
+#    - app  : PHP 8.2 + Apache (la aplicación)
+#    - db   : MySQL 8.0 (base de datos)
+# =============================================================
+
+services:
+  # -----------------------------------------------------------------
+  #  Aplicación PHP + Apache
+  # -----------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_ENV: production
+    image: tienda-moda/app:latest
+    container_name: tienda-moda-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      # ---- Conexión a la base de datos ----
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-sistema_moda}
+      DB_USER: ${DB_USER:-tienda}
+      DB_PASS: ${DB_PASS:-tienda_pass}
+      # ---- Ruta base de la app ----
+      # Vacío = la app vive en la raíz (http://localhost:8080/)
+      # "/tienda-moda" = la app vive en una subcarpeta
+      APP_BASE_PATH: ${APP_BASE_PATH:-}
+    volumes:
+      # Código fuente montado para desarrollo (cambios en vivo).
+      # Quitar en producción para usar la copia baked-in de la imagen.
+      - ./:/var/www/html
+      # Preserva el vendor/ instalado en la imagen (el bind-mount de arriba
+      # lo sombrearía porque el host no tiene vendor/).
+      - /var/www/html/vendor
+      # Volúmenes nombrados para conservar uploads entre reinicios
+      - app-uploads:/var/www/html/public/uploads
+      - app-uploads-root:/var/www/html/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - tienda-net
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # -----------------------------------------------------------------
+  #  Base de datos MySQL 8.0
+  # -----------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: tienda-moda-db
+    restart: unless-stopped
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-storage-engine=InnoDB
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS:-root_pass}
+      MYSQL_DATABASE: ${DB_NAME:-sistema_moda}
+      MYSQL_USER: ${DB_USER:-tienda}
+      MYSQL_PASSWORD: ${DB_PASS:-tienda_pass}
+    ports:
+      - "${DB_EXTERNAL_PORT:-3307}:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      # Backup inicial: si la carpeta /docker-entrypoint-initdb.d tiene .sql,
+      # MySQL los ejecuta automáticamente al crear el volumen por PRIMERA vez.
+      - ./bk_basededatos.sql:/docker-entrypoint-initdb.d/01-bk_basededatos.sql:ro
+    healthcheck:
+      # mysqladmin ping funciona sin password contra el socket local
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - tienda-net
+
+# =============================================================
+#  Volúmenes persistentes
+# =============================================================
+volumes:
+  db-data:
+    name: tienda-moda-db-data
+  app-uploads:
+    name: tienda-moda-uploads
+  app-uploads-root:
+    name: tienda-moda-uploads-root
+
+# =============================================================
+#  Red interna
+# =============================================================
+networks:
+  tienda-net:
+    name: tienda-moda-net
+    driver: bridge

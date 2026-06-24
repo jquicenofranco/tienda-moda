@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= Csrf::meta() ?>
     <title>Punto de Venta - Sistema Moda</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -336,7 +337,10 @@
             if (result.isConfirmed) {
                 fetch(`${BASE_URL}/ventas/guardar`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    },
                     body: JSON.stringify({ carrito: carrito, total: total, cliente_id: clienteActual.id })
                 })
                 .then(res => res.json())

@@ -47,7 +47,7 @@
             
             <div class="card-body p-4">
                 <form action="<?= BASE_URL ?>/producto/guardar" method="POST">
-                    
+                    <?= Csrf::field() ?>
                     <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Datos Básicos</h6>
                     
                     <div class="row mb-3 g-3">

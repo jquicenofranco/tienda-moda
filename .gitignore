@@ -7,6 +7,9 @@
 .env.*
 !.env.example
 
+# Volúmenes Docker locales
+.docker-volumes/
+
 # Logs y temporales
 *.log
 *.cache

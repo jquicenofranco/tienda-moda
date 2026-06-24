@@ -46,6 +46,7 @@
             </p>
             
             <form action="<?= BASE_URL ?>/caja/abrir" method="POST">
+                <?= Csrf::field() ?>
                 <div class="form-floating mb-3">
                     <input type="number" step="0.01" name="monto" class="form-control form-control-lg fw-bold text-center fs-3" id="montoInput" placeholder="0.00" required autofocus>
                     <label for="montoInput">Monto Inicial (S/)</label>

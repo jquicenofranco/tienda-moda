@@ -42,14 +42,4 @@ class AuthController {
         session_destroy();
         header('Location: ' . BASE_URL . '/auth/index');
     }
-
-    public function setup() {
-        $usuarioModel = new Usuario();
-        try {
-            $usuarioModel->crear('Admin Principal', 'admin@tienda.com', '123456');
-            echo "Usuario creado. <a href='" . BASE_URL . "/auth/index'>Ir al Login</a>";
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
-        }
-    }
 }

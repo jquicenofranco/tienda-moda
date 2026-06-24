@@ -43,6 +43,7 @@
         <?php endif; ?>
 
         <form action="<?= BASE_URL ?>/auth/acceder" method="POST">
+            <?= Csrf::field() ?>
             <div class="mb-3">
                 <label class="form-label fw-bold text-muted" style="font-size: 0.9rem;">Correo Electrónico</label>
                 <input type="email" name="correo" class="form-control form-control-lg bg-light" 
